@@ -37,3 +37,21 @@ _Assumptions I have made_:
 - The user can clear the saved theme property values.
 - There will be a "Use preset" button to fill up the form using a preset.
 - I assume that this theme editor is used as a part of a CSS theme generator software to generate custom CSS stylesheet for a UI framework. The user is able to edit a specific / fixed structure (structure of the UI framework) to customize its appearance. The customization can be saved locally to support further editing. The user can download the CSS stylesheets using the theme generator, which is not in the scope of this application.
+
+## [Day2] Planning
+
+Today I had a limited amount of time, thus I decided to plan the development process.
+
+### Planning the development process
+
+I am fond of software quality, so I am planning to have a strong test coverage, a clean structure and high reusablity. In my opinion software quality and clean architecture goes hand in hand with the ability to refactor (means how confident we are to remove working productive code in favor of a newer more optimal one). To foster these processes **I am going to use TDD**. As a test environment I am going to use **react testing library and Jest** (which is shipped with Create-React-App).
+
+### Planning the technical environment
+
+As it is a requirement I am going to **use React JS framework**. As a result I am **going to create an NPM project**. Given the fact that this project is fairly simple, I am **going to use Create-React-App** generator to bootstrap the project.
+
+Another interesting question was to decide whether I should use JavaScript or TypeScript.
+
+TypeScript is a language that helps to make code more consistent, cleaner, more reusable and simpler, exactly how I believe something should look like. Usually I think TypeScript code base is easier to maintain, but in general I feel it is better to use it for bigger projects.  
+Despite the fact that I consider TypeScript as a more proper tool, in my opinion **JavaScript is a better choice** for this simple software.
+
