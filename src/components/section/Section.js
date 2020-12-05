@@ -1,16 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Property from '../property/Property'
 
 function Section({definition}) {
   return (
     <div role="rowgroup">
       { definition.title }
       { definition.properties.map((property) => (
-        <div role="row" key={`${definition.prefix}.${property.variableReference}`}>
-          { property.displayName }:
-          { property.value }
-          { `${definition.prefix}.${property.variableReference}` }
-        </div>
+        <Property definition={property} prefix={definition.prefix} key={`${definition.prefix}.${property.variableReference}`}/>
       )) }
     </div>
   )

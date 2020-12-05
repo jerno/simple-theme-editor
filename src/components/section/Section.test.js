@@ -30,13 +30,4 @@ describe('Section', () => {
     const propertyElements = screen.queryAllByRole('row');
     expect(propertyElements).toHaveLength(SECTION_DEFINITION.properties.length);
   });
-
-  it('renders each property details', () => {
-    const propertyDisplayName = screen.getByText(new RegExp(SECTION_DEFINITION.properties[0].displayName, "i"));
-    const propertyValue = screen.getByText(new RegExp(SECTION_DEFINITION.properties[0].value, "i"));
-    const propertyVariableReference = screen.getByText(new RegExp(`${SECTION_DEFINITION.prefix}.${SECTION_DEFINITION.properties[0].variableReference}`, "i"));
-    expect(propertyDisplayName).toBeDefined();
-    expect(propertyValue).toBeDefined();
-    expect(propertyVariableReference).toBeDefined();
-  });
 });
