@@ -7,6 +7,7 @@ export const SectionDefinitions = [
       {
         displayName: 'Primary font color',
         value: '#000000',
+        type: 'color',
         variableReference: 'primary',
       }
     ]
@@ -19,6 +20,7 @@ export const SectionDefinitions = [
       {
         displayName: 'Default text size',
         value: '1.1',
+        type: 'em',
         variableReference: 'text',
       }
     ]

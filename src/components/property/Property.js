@@ -2,9 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default function Property({definition, prefix}) {
+  const isValueUnitLike = !(definition.type === 'text' || definition.type === 'color');
+  const unitPostfix = isValueUnitLike ? ` (${definition.type})` : '';
+
   return (
     <div role="row">
-      {definition.displayName}:
+      {`${definition.displayName}${unitPostfix}`}:
       {definition.value}
       {`${prefix}.${definition.variableReference}`}
     </div>
