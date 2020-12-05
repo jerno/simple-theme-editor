@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { PropertyTypeDefinitions } from '../../config/Definitions';
 import PropertyEditor from './PropertyEditor';
 
@@ -48,14 +49,24 @@ describe('PropertyEditor', () => {
     }
     const PREFIX = 'test-prefix';
 
-    render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
+    const mockCallback = jest.fn(({type, value}) => {});
+
+    render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} updateSectionDefinition={mockCallback} />);
     const { value } = PROPERTY_DEFINITION;
 
     const valueField = screen.getByDisplayValue(value);
     
     expect(screen.getByDisplayValue(value)).toBeDefined();
-    fireEvent.change(valueField, { target: { value: 'nextValueA' } });
-    expect(screen.getByDisplayValue('nextValueA')).toBeDefined();
+    userEvent.type(valueField, '_updated')
+    
+    expect(screen.getByDisplayValue('valueA_updated')).toBeDefined();
+    
+    expect(mockCallback.mock.calls.length).toBe(0);
+    
+    fireEvent.click(screen.getByText('OK'), {});
+
+    expect(mockCallback.mock.calls.length).toBe(1);
+    expect(mockCallback.mock.calls[0][0].value).toBe('valueA_updated');
   });
 
   it('renders type editor radio group', () => {

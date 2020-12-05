@@ -1,16 +1,38 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Property from '../property/Property'
+import PropertyEditor from '../property/PropertyEditor'
 
-function Section({definition}) {
+function Section({definition, updateSectionDefinition}) {
   return (
     <div role="rowgroup">
       { definition.title }
       { definition.properties.map((property) => (
-        <Property definition={property} prefix={definition.prefix} key={`${definition.prefix}.${property.variableReference}`}/>
+        <PropertyEditor 
+          key={`${definition.prefix}.${property.variableReference}`}
+          definition={property} 
+          prefix={definition.prefix} 
+          updateSectionDefinition={(updatedProperties) => handleUpdate(property, updatedProperties)}
+        />
       )) }
     </div>
-  )
+  );
+
+  function handleUpdate(property, updatedProperties) {
+    const nextProperty = {
+      ...property,
+      ...updatedProperties
+    };
+    
+    const nextSectionDefinition = {
+      ...definition,
+      properties: [
+        ...definition.properties.filter((p) => p !== property),
+        nextProperty
+      ]
+    };
+    
+    updateSectionDefinition(nextSectionDefinition);
+  }
 }
 
 Section.propTypes = {

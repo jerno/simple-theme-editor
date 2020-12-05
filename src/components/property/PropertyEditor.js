@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Property from './Property'
 import { PropertyTypeDefinitions } from '../../config/Definitions';
 
-export default function PropertyEditor({definition, prefix}) {
+export default function PropertyEditor({definition, prefix, updateSectionDefinition}) {
   const [propertyValue, setPropertyValue] = useState(definition.value);
   const [propertyType, setPropertyType] = useState(definition.type);
 
@@ -30,6 +30,8 @@ export default function PropertyEditor({definition, prefix}) {
         )) }
         </form>
       </div>
+
+      <button onClick={() => updateSectionDefinition({ value: propertyValue, type: propertyType })}>OK</button>
     </>
   );
 }
