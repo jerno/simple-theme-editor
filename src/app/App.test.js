@@ -13,7 +13,7 @@ describe('App', () => {
   });
 
   it('renders with predefined sections', () => {
-    const sectionElements = screen.queryAllByRole(/region/i);
+    const sectionElements = screen.queryAllByRole(/rowgroup/i);
     expect(sectionElements).toHaveLength(SectionDefinitions.length);
   });
 });

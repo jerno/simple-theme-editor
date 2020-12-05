@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 function Section({definition}) {
   return (
-    <div role="region">
+    <div role="rowgroup">
       { definition.title }
       { definition.properties.map((property) => (
         <div role="row" key={`${definition.prefix}.${property.variableReference}`}>
