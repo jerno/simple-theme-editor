@@ -1,10 +1,19 @@
 import { render, screen } from '@testing-library/react';
+import { SectionDefinitions } from '../config/Definitions';
 import App from './App';
 
 describe('App', () => {
-  it('renders with title', () => {
+  beforeEach(() => {
     render(<App />);
+  });
+
+  it('renders with title', () => {
     const titleElement = screen.getByText(/Simple Theme Editor/i);
     expect(titleElement).toBeInTheDocument();
+  });
+
+  it('renders with predefined sections', () => {
+    const sectionElements = screen.queryAllByRole(/region/i);
+    expect(sectionElements).toHaveLength(SectionDefinitions.length);
   });
 });
