@@ -26,3 +26,21 @@ export const SectionDefinitions = [
     ]
   },
 ]
+export const PropertyTypeDefinitions = [
+  {
+    value: 'text',
+    label: 'Plain text',
+  },
+  {
+    value: 'em',
+    label: 'em',
+  },
+  {
+    value: 'px',
+    label: 'px',
+  },
+  {
+    value: 'color',
+    label: 'Color',
+  },
+]
