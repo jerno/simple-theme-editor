@@ -12,7 +12,7 @@ describe('PropertyEditor', () => {
       type: 'text',
       variableReference: 'prop-a',
     }
-    const PREFIX = 'test-prefix';
+    const PREFIX = 'prefix';
 
     render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
     const { value, variableReference } = PROPERTY_DEFINITION;
@@ -47,7 +47,7 @@ describe('PropertyEditor', () => {
       type: 'px',
       variableReference: 'prop-a',
     }
-    const PREFIX = 'test-prefix';
+    const PREFIX = 'prefix';
 
     render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
 
@@ -75,7 +75,7 @@ describe('PropertyEditor', () => {
       type: 'px',
       variableReference: 'prop-a',
     }
-    const PREFIX = 'test-prefix';
+    const PREFIX = 'prefix';
 
     render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
     
@@ -150,7 +150,7 @@ function renderEditor(options = {}) {
     type: 'text',
     variableReference: 'prop-a',
   };
-  const PREFIX = 'test-prefix';
+  const PREFIX = 'prefix';
 
   const mockCallback = jest.fn(updateCallback);
   const mockCancel = jest.fn(() => { });
