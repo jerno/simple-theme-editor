@@ -9,7 +9,7 @@ export default function PropertyEditor({definition, prefix, updateSectionDefinit
 
   return (
     <>
-      <Property definition={definition} prefix={prefix}/>
+      <Property definition={definition} prefix={prefix} updateSectionDefinition={noop} onEdit={noop}/>
 
       <label htmlFor="valueField">Value:</label>
       <input id="valueField" type="text" name="valueField" value={propertyValue} onChange={(e) => {setPropertyValue(e.target.value)}}/>
@@ -36,6 +36,8 @@ export default function PropertyEditor({definition, prefix, updateSectionDefinit
     </>
   );
 }
+
+function noop() {}
 
 PropertyEditor.propTypes = {
   definition: PropTypes.shape({
