@@ -3,22 +3,22 @@ import PropertyValueValidator from './PropertyValueValidator';
 jest.mock('../config/Definitions', () => ({ 
   PropertyTypeDefinitions: [
     {
-      value: 'opt1',
-      label: 'opt1',
+      value: 'text',
+      label: 'text',
     },
     {
-      value: 'opt2',
-      label: 'opt2',
+      value: 'em',
+      label: 'em',
     },
   ]
 }));
 
 describe('PropertyValueValidator', () => {
-  it('passes for values of non-textual existing properties', () => {
+  it('passes for fixed values', () => {
     const property = {
       displayName: 'Variable name 2',
       value: '1',
-      type: 'opt1',
+      type: 'em',
       variableReference: 'var2',
     };
     const definitions = {};
@@ -27,36 +27,22 @@ describe('PropertyValueValidator', () => {
     expect(validationError).toBe(false);
   });
 
-  it('passes for values of textual properties if the references are existing', () => {
+  it('passes for values of properties if the references are existing', () => {
     const property = {
       displayName: 'Variable name 2',
-      value: '1px solid {colors.primary}',
-      type: 'text',
+      value: '{sizes.text}',
+      type: 'em',
       variableReference: 'var2',
     };
     const definitions = {
-      "colors.primary": "#11ff22"
+      "sizes.text": "1.2"
     };
 
     const validationError = PropertyValueValidator.validatePropertyAgainstDefinitions(property, definitions);
     expect(validationError).toBe(false);
   });
 
-  it('fails for values of non-textual existing properties containing references', () => {
-    const property = {
-      displayName: 'Variable name 2',
-      value: '1px {colors.primary}',
-      type: 'opt1',
-      variableReference: 'var2',
-    };
-    const definitions = {};
-
-    const validationError = PropertyValueValidator.validatePropertyAgainstDefinitions(property, definitions);
-    expect(validationError).toContain('Unexpected reference');
-    expect(validationError).toContain('colors.primary');
-  });
-
-  it('fails for values of textual properties if the references are NOT existing', () => {
+  it('fails for values of properties if the references are NOT existing', () => {
     const property = {
       displayName: 'Variable name 2',
       value: '1px solid {colors.nonExisting}',

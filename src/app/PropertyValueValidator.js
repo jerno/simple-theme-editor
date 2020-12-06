@@ -9,16 +9,13 @@ export default class PropertyValueValidator {
   static validatePropertyAgainstDefinitions(property, definitions) {
     const validator = new PropertyValueValidator(property, definitions);
 
-    if (property.type === 'text') {
-      return validator.validateTextualProperty();
-    }
     if (PropertyTypeDefinitions.find((def) => property.type === def.value)) {
-      return validator.validateNonTextualProperty();
+      return validator.validateProperty();
     }
     return validator.validateUndefinedProperty();
   }
 
-  validateTextualProperty() {
+  validateProperty() {
     const references = this.findReferences(this.property.value);
     const resolvedRefs = this.resolveReferences(references);
   
@@ -56,15 +53,6 @@ export default class PropertyValueValidator {
       match = myRegexp.exec(value);
     }
     return references;
-  }
-
-  validateNonTextualProperty() {
-    const references = this.findReferences(this.property.value);
-    if (references.length > 0) {
-      const variableRefrencesToRemove = references.map((ref) => `{${ref}}`);
-      return `Unexpected reference: Only properties with type 'text' can contain variable refrences. Remove ${variableRefrencesToRemove.join(', ')}`
-    }
-    return false;
   }
 
   validateUndefinedProperty() {
