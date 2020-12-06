@@ -25,6 +25,19 @@ export const SectionDefinitions = [
       }
     ]
   },
+  {
+    id: 3,
+    title: 'Text field',
+    prefix: 'textfield',
+    properties: [
+      {
+        displayName: 'Border',
+        value: '1px solid {colors.primary}',
+        type: 'text',
+        variableReference: 'border',
+      }
+    ]
+  },
 ]
 export const PropertyTypeDefinitions = [
   {

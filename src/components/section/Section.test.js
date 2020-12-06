@@ -104,6 +104,9 @@ describe('Section', () => {
     fireEvent.click(screen.getByText('OK'), {});
 
     expect(mockCallback.mock.calls.length).toBe(1);
-    expect(mockCallback.mock.calls[0][0].properties[0].value).toBe('70');
+    const firstCall = mockCallback.mock.calls[0];
+    const payload = firstCall[0];
+    const affectedProperty = payload.nextProperty;
+    expect(affectedProperty.value).toBe('70');
   });
 });

@@ -50,8 +50,11 @@ function Section({definition, updateSectionDefinition}) {
       ]
     };
     
-    closeEditor(property.variableReference);
-    updateSectionDefinition(nextSectionDefinition);
+    const errorMessage = updateSectionDefinition({nextSectionDefinition, nextProperty});
+    if (!errorMessage) {
+      closeEditor(property.variableReference);
+    }
+    return errorMessage;
   }
 
   function closeEditor(variableReference) {

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { SectionDefinitions } from '../config/Definitions';
 import App from './App';
+import PropertyValueValidator from './PropertyValueValidator';
 
 jest.mock('../config/Definitions', () => ({ 
   SectionDefinitions: [
@@ -62,12 +63,19 @@ jest.mock('../components/section/Section', () => ({definition, updateSectionDefi
     <div 
       role="rowgroup" 
       data-testid={`userUpdateSimulator-${definition.id}`} 
-      onClick={() => updateSectionDefinition(MOCK_UPDATED_SECTION_DEFINITION)}
+      onClick={() => updateSectionDefinition({
+        nextSectionDefinition: MOCK_UPDATED_SECTION_DEFINITION,
+        nextProperty: MOCK_UPDATED_SECTION_DEFINITION.properties[0]
+      })}
     >
       { JSON.stringify(definition) }
     </div>
   );
 });
+
+jest.mock('./PropertyValueValidator', () => ({
+  validatePropertyAgainstDefinitions: jest.fn((property, definitions) => false)
+}));
 
 describe('App', () => {
   beforeEach(() => {
@@ -93,5 +101,18 @@ describe('App', () => {
 
     const updatedValueElement = screen.getByText(/nextValue/i);
     expect(updatedValueElement).toBeInTheDocument();
+  });
+
+  it('maps the properties of the definitions (for the validation)', () => {
+    const userUpdateSimulator = screen.getByTestId("userUpdateSimulator-1");
+    fireEvent.click(userUpdateSimulator, {});
+
+    expect(PropertyValueValidator.validatePropertyAgainstDefinitions.mock.calls.length).toBe(1);
+    const firstCallParameters = PropertyValueValidator.validatePropertyAgainstDefinitions.mock.calls[0];
+    const passedDefinitions = firstCallParameters[1];
+    expect(passedDefinitions).toStrictEqual({
+      "custom.var": "customValue",
+      "custom2.var2": "otherValue"
+    });
   });
 });
