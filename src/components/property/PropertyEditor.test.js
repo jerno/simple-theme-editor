@@ -24,49 +24,20 @@ describe('PropertyEditor', () => {
     expect(screen.getByText(expectedVariableReference, { exact: false })).toBeDefined();
   });
 
-  it('renders value editor field', () => {
-    const PROPERTY_DEFINITION = {
-      displayName: 'Prop A',
-      value: 'valueA',
-      type: 'text',
-      variableReference: 'prop-a',
-    }
-    const PREFIX = 'test-prefix';
-
-    render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
-    const { value } = PROPERTY_DEFINITION;
+  it('renders value editor field with the correct value', () => {
+    const { value } = renderEditor();
 
     expect(screen.getByRole('textbox')).toBeDefined();
     expect(screen.getByDisplayValue(value)).toBeDefined();
   });
 
   it('changes value when changing editor field', () => {
-    const PROPERTY_DEFINITION = {
-      displayName: 'Prop A',
-      value: 'valueA',
-      type: 'text',
-      variableReference: 'prop-a',
-    }
-    const PREFIX = 'test-prefix';
-
-    const mockCallback = jest.fn(({type, value}) => {});
-
-    render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} updateSectionDefinition={mockCallback} />);
-    const { value } = PROPERTY_DEFINITION;
+    const { value } = renderEditor();
 
     const valueField = screen.getByDisplayValue(value);
-    
-    expect(screen.getByDisplayValue(value)).toBeDefined();
-    userEvent.type(valueField, '_updated')
+    userEvent.type(valueField, '_updated');
     
     expect(screen.getByDisplayValue('valueA_updated')).toBeDefined();
-    
-    expect(mockCallback.mock.calls.length).toBe(0);
-    
-    fireEvent.click(screen.getByText('OK'), {});
-
-    expect(mockCallback.mock.calls.length).toBe(1);
-    expect(mockCallback.mock.calls[0][0].value).toBe('valueA_updated');
   });
 
   it('renders type editor radio group', () => {
@@ -124,4 +95,34 @@ describe('PropertyEditor', () => {
     expect(pixelRadio.checked).toBeFalsy();
     expect(plainTextRadio.checked).toBeTruthy();
   });
+
+  it('emits value only when user submits the editor', () => {
+    const { value, mockCallback } = renderEditor();
+
+    const valueField = screen.getByDisplayValue(value);
+    userEvent.type(valueField, '_updated');
+        
+    expect(mockCallback.mock.calls.length).toBe(0);
+    
+    fireEvent.click(screen.getByText('OK'), {});
+
+    expect(mockCallback.mock.calls.length).toBe(1);
+    expect(mockCallback.mock.calls[0][0].value).toBe('valueA_updated');
+  });
 });
+
+function renderEditor() {
+  const PROPERTY_DEFINITION = {
+    displayName: 'Prop A',
+    value: 'valueA',
+    type: 'text',
+    variableReference: 'prop-a',
+  };
+  const PREFIX = 'test-prefix';
+
+  const mockCallback = jest.fn(({ }) => { });
+
+  render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} updateSectionDefinition={mockCallback} />);
+  const { value } = PROPERTY_DEFINITION;
+  return { value, mockCallback };
+}
