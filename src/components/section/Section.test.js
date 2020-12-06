@@ -1,12 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Section from './Section';
-
-const MOCK_UPDATE_PROPERTIES = { value: 'nextValue' };
-
-jest.mock('../property/PropertyEditor', () => ({updateSectionDefinition}) => {
-  updateSectionDefinition(MOCK_UPDATE_PROPERTIES);
-  return <div role="row"></div>;
-});
 
 const SECTION_DEFINITION = {
   id: 1,
@@ -42,8 +36,38 @@ describe('Section', () => {
     expect(propertyElements).toHaveLength(SECTION_DEFINITION.properties.length);
   });
 
+  it('renders no in-place editor until clicked', () => {
+    const textbox = screen.queryAllByRole('textbox');
+    expect(textbox).toHaveLength(0);
+  });
+  
+  it('renders the in-place editor upon clicked', () => {
+    const textboxesBeforeClick = screen.queryAllByRole('textbox');
+    expect(textboxesBeforeClick).toHaveLength(0);
+
+    const firstProperty = screen.queryAllByRole('row')[0];
+    fireEvent.click(firstProperty, {});
+
+    const textboxesAfterClick = screen.queryAllByRole('textbox');
+    expect(textboxesAfterClick).toHaveLength(1);
+  });
+
   it('calls updateSectionDefinition upon child update request', () => {
+    const firstProperty = screen.queryAllByRole('row')[0];
+    fireEvent.click(firstProperty, {});
+
+    const valueField = screen.getByRole('textbox');
+    expect(valueField).toBeDefined();
+    
+    userEvent.type(valueField, '0')
+    
+    expect(screen.getByDisplayValue('70')).toBeDefined();
+    
+    expect(mockCallback.mock.calls.length).toBe(0);
+    
+    fireEvent.click(screen.getByText('OK'), {});
+
     expect(mockCallback.mock.calls.length).toBe(1);
-    expect(mockCallback.mock.calls[0][0].properties[0].value).toBe(MOCK_UPDATE_PROPERTIES.value);
+    expect(mockCallback.mock.calls[0][0].properties[0].value).toBe('70');
   });
 });

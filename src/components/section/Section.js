@@ -1,21 +1,39 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import PropertyEditor from '../property/PropertyEditor'
+import Property from '../property/Property';
 
 function Section({definition, updateSectionDefinition}) {
+  const [inPlaceEditors, setInPlaceEditors] = useState({});
+
   return (
     <div role="rowgroup">
       { definition.title }
-      { definition.properties.map((property) => (
-        <PropertyEditor 
-          key={`${definition.prefix}.${property.variableReference}`}
-          definition={property} 
-          prefix={definition.prefix} 
-          updateSectionDefinition={(updatedProperties) => handleUpdate(property, updatedProperties)}
-        />
-      )) }
+      { definition.properties.map((propertyDefinition) => renderProperty(propertyDefinition)) }
     </div>
   );
+
+  function renderProperty(propertyDefinition) {
+    if (!!inPlaceEditors[propertyDefinition.variableReference]) {
+      return (
+        <PropertyEditor 
+          key={`${definition.prefix}.${propertyDefinition.variableReference}`}
+          definition={propertyDefinition} 
+          prefix={definition.prefix} 
+          updateSectionDefinition={(updatedProperties) => handleUpdate(propertyDefinition, updatedProperties)}
+        />
+      );
+    } else {
+      return (
+        <Property
+          key={`${definition.prefix}.${propertyDefinition.variableReference}`}
+          definition={propertyDefinition}
+          prefix={definition.prefix}
+          onEdit={() => setInPlaceEditors({...inPlaceEditors, [propertyDefinition.variableReference]: true})}
+        />
+      );
+    }
+  }
 
   function handleUpdate(property, updatedProperties) {
     const nextProperty = {

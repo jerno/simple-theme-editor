@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export default function Property({definition, prefix}) {
+export default function Property({definition, prefix, onEdit}) {
   const isValueUnitLike = !(definition.type === 'text' || definition.type === 'color');
   const unitPostfix = isValueUnitLike ? ` (${definition.type})` : '';
 
   return (
-    <div role="row">
+    <div role="row" onClick={() => onEdit()}>
       {`${definition.displayName}${unitPostfix}`}:
       {definition.value}
       {`${prefix}.${definition.variableReference}`}
