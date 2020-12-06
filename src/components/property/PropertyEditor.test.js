@@ -123,9 +123,27 @@ describe('PropertyEditor', () => {
     expect(mockCallback.mock.calls.length).toBe(0);
     expect(mockCancel.mock.calls.length).toBe(1);
   });
+
+  it('renders error message when validation fails', () => {
+    const { value, mockCallback } = renderEditor({
+      updateCallback: () => 'Error message'
+    });
+
+    const valueField = screen.getByDisplayValue(value);
+    userEvent.type(valueField, '_updated');
+        
+    expect(mockCallback.mock.calls.length).toBe(0);
+    
+    fireEvent.click(screen.getByText('OK'), {});
+
+    expect(mockCallback.mock.calls.length).toBe(1);
+    expect(screen.getByText('Error message', { exact: false })).toBeDefined();
+  });
+
 });
 
-function renderEditor() {
+function renderEditor(options = {}) {
+  const updateCallback = options.updateCallback || (() => { });
   const PROPERTY_DEFINITION = {
     displayName: 'Prop A',
     value: 'valueA',
@@ -134,7 +152,7 @@ function renderEditor() {
   };
   const PREFIX = 'test-prefix';
 
-  const mockCallback = jest.fn(() => { });
+  const mockCallback = jest.fn(updateCallback);
   const mockCancel = jest.fn(() => { });
 
   render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} updateSectionDefinition={mockCallback} onCancel={mockCancel} />);

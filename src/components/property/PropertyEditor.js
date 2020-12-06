@@ -6,6 +6,7 @@ import { PropertyTypeDefinitions } from '../../config/Definitions';
 export default function PropertyEditor({definition, prefix, updateSectionDefinition, onCancel}) {
   const [propertyValue, setPropertyValue] = useState(definition.value);
   const [propertyType, setPropertyType] = useState(definition.type);
+  const [error, setError] = useState(false);
 
   return (
     <>
@@ -31,10 +32,17 @@ export default function PropertyEditor({definition, prefix, updateSectionDefinit
         </form>
       </div>
 
+      { error && <p>{ error }</p> }
+
       <button onClick={() => onCancel()}>cancel</button>
-      <button onClick={() => updateSectionDefinition({ value: propertyValue, type: propertyType })}>OK</button>
+      <button onClick={() => requestUpdate()}>OK</button>
     </>
   );
+
+  function requestUpdate() {
+    const errorMessage = updateSectionDefinition({ value: propertyValue, type: propertyType });
+    setError(errorMessage);
+  }
 }
 
 function noop() {}
