@@ -6,7 +6,7 @@ export default function Property({definition, prefix, onEdit}) {
   const unitPostfix = isValueUnitLike ? ` (${definition.type})` : '';
 
   return (
-    <div role="row" onClick={() => onEdit()}>
+    <div role="row" onClick={() => onEdit && onEdit()}>
       {`${definition.displayName}${unitPostfix}`}:
       {definition.value}
       {`${prefix}.${definition.variableReference}`}
