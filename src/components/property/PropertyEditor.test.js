@@ -109,6 +109,20 @@ describe('PropertyEditor', () => {
     expect(mockCallback.mock.calls.length).toBe(1);
     expect(mockCallback.mock.calls[0][0].value).toBe('valueA_updated');
   });
+
+  it('emits nothing when user cancels the edition', () => {
+    const { value, mockCallback, mockCancel } = renderEditor();
+
+    const valueField = screen.getByDisplayValue(value);
+    userEvent.type(valueField, '_updated');
+        
+    expect(mockCallback.mock.calls.length).toBe(0);
+    
+    fireEvent.click(screen.getByText('cancel'), {});
+
+    expect(mockCallback.mock.calls.length).toBe(0);
+    expect(mockCancel.mock.calls.length).toBe(1);
+  });
 });
 
 function renderEditor() {
@@ -120,9 +134,10 @@ function renderEditor() {
   };
   const PREFIX = 'test-prefix';
 
-  const mockCallback = jest.fn(({ }) => { });
+  const mockCallback = jest.fn(() => { });
+  const mockCancel = jest.fn(() => { });
 
-  render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} updateSectionDefinition={mockCallback} />);
+  render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} updateSectionDefinition={mockCallback} onCancel={mockCancel} />);
   const { value } = PROPERTY_DEFINITION;
-  return { value, mockCallback };
+  return { value, mockCancel, mockCallback };
 }

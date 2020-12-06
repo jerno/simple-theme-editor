@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Property from './Property'
 import { PropertyTypeDefinitions } from '../../config/Definitions';
 
-export default function PropertyEditor({definition, prefix, updateSectionDefinition}) {
+export default function PropertyEditor({definition, prefix, updateSectionDefinition, onCancel}) {
   const [propertyValue, setPropertyValue] = useState(definition.value);
   const [propertyType, setPropertyType] = useState(definition.type);
 
@@ -31,6 +31,7 @@ export default function PropertyEditor({definition, prefix, updateSectionDefinit
         </form>
       </div>
 
+      <button onClick={() => onCancel()}>cancel</button>
       <button onClick={() => updateSectionDefinition({ value: propertyValue, type: propertyType })}>OK</button>
     </>
   );

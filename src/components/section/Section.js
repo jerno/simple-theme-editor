@@ -21,6 +21,7 @@ function Section({definition, updateSectionDefinition}) {
           definition={propertyDefinition} 
           prefix={definition.prefix} 
           updateSectionDefinition={(updatedProperties) => handleUpdate(propertyDefinition, updatedProperties)}
+          onCancel={() => closeEditor(propertyDefinition.variableReference)}
         />
       );
     } else {
@@ -49,7 +50,12 @@ function Section({definition, updateSectionDefinition}) {
       ]
     };
     
+    closeEditor(property.variableReference);
     updateSectionDefinition(nextSectionDefinition);
+  }
+
+  function closeEditor(variableReference) {
+    setInPlaceEditors({...inPlaceEditors, [variableReference]: false})
   }
 }
 

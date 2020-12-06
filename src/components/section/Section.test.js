@@ -52,6 +52,42 @@ describe('Section', () => {
     expect(textboxesAfterClick).toHaveLength(1);
   });
 
+  it('hides the in-place editor upon ok clicked', () => {
+    const textboxesBeforeClick = screen.queryAllByRole('textbox');
+    expect(textboxesBeforeClick).toHaveLength(0);
+
+    const firstProperty = screen.queryAllByRole('row')[0];
+    fireEvent.click(firstProperty, {});
+
+    const okButton = screen.getByText('OK');
+    
+    const textboxesAfterClick = screen.queryAllByRole('textbox');
+    expect(textboxesAfterClick).toHaveLength(1);
+
+    fireEvent.click(okButton, {});
+
+    const textboxesAfterOkClick = screen.queryAllByRole('textbox');
+    expect(textboxesAfterOkClick).toHaveLength(0);
+  });
+
+  it('hides the in-place editor upon cancel clicked', () => {
+    const textboxesBeforeClick = screen.queryAllByRole('textbox');
+    expect(textboxesBeforeClick).toHaveLength(0);
+
+    const firstProperty = screen.queryAllByRole('row')[0];
+    fireEvent.click(firstProperty, {});
+
+    const cancelButton = screen.getByText('cancel');
+    
+    const textboxesAfterClick = screen.queryAllByRole('textbox');
+    expect(textboxesAfterClick).toHaveLength(1);
+
+    fireEvent.click(cancelButton, {});
+
+    const textboxesAfterOkClick = screen.queryAllByRole('textbox');
+    expect(textboxesAfterOkClick).toHaveLength(0);
+  });
+
   it('calls updateSectionDefinition upon child update request', () => {
     const firstProperty = screen.queryAllByRole('row')[0];
     fireEvent.click(firstProperty, {});
