@@ -62,6 +62,24 @@ describe('Property', () => {
     expect(screen.getByText(expectedVariableReference, { exact: false })).toBeDefined();
   });
 
+  it('renders color badge', () => {
+    const PROPERTY_DEFINITION = {
+      displayName: 'Prop A',
+      value: '#ff0000',
+      type: 'color',
+      variableReference: 'prop-a',
+    }
+    const PREFIX = 'prefix';
+
+    render(<Property definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
+    const { value } = PROPERTY_DEFINITION;
+
+    const expectedValue = value;
+
+    expect(screen.getByText(expectedValue, { exact: false })).toBeDefined();
+    expect(screen.getByRole('presentation')).toBeDefined();
+  });
+
   it('renders \'resolved\' value', () => {
     const PROPERTY_DEFINITION = {
       displayName: 'Prop A',

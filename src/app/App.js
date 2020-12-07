@@ -1,4 +1,5 @@
 import { useState } from "react";
+import styled from "styled-components";
 import Section from "../components/section/Section";
 import { SectionDefinitions } from "../config/Definitions";
 import PropertyValueValidator from "./PropertyValueValidator";
@@ -10,7 +11,7 @@ function App() {
 
   return (
     <div className="p-3">
-      <h1 className="text-primary">Simple Theme Editor</h1>
+      <Header>Simple Theme Editor</Header>
       { sections.map((sectionDefinition) => (
         <Section 
           key={sectionDefinition.id} 
@@ -19,9 +20,9 @@ function App() {
           updateSectionDefinition={requestUpdateSectionDefinition}
         />
       )) }
-      <button onClick={() => saveValues(values)()} type="button" class="btn btn-primary">Save</button>
-      <button onClick={() => setValues(getPreset())} type="button" class="btn btn-light">loadPreset</button>
-      <button type="button" class="btn btn-danger" disabled>Clear</button>
+      <button onClick={() => saveValues(values)} type="button" className="btn btn-sm pl-4 pr-4 mr-1 btn-primary">Save</button>
+      <button onClick={() => setValues(getPreset())} type="button" className="btn btn-sm pl-4 pr-4 mr-1 btn-light">Load preset</button>
+      <button onClick={() => setValues({})} type="button" className="btn btn-sm pl-4 pr-4 mr-1 btn-danger">Clear form</button>
     </div>
   );
 
@@ -45,5 +46,11 @@ function App() {
     return sections.sort((s1, s2) => `${s1.id}`.localeCompare(`${s2.id}`));
   }
 }
+
+const Header = styled.h1.attrs({
+  className: "text-primary",
+})`
+  text-transform: lowercase;
+`;
 
 export default App;

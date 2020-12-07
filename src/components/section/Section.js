@@ -2,32 +2,34 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import PropertyEditor from '../property/PropertyEditor'
 import Property from '../property/Property';
+import styled from 'styled-components';
 
 function Section({definition, updateSectionDefinition, resolvedReferences}) {
   const [inPlaceEditors, setInPlaceEditors] = useState({});
 
   return (
-    <div role="rowgroup" className="mt-4 mb-4">
-      <a href={`#collapse${definition.id}`} role="button" data-toggle="collapse" aria-expanded="false" aria-controls={`collapse${definition.id}`}>
-        <h2 style={{fontSize: '1.3rem'}}>{ definition.title }</h2>
-      </a>
-      <div class="collapse" id={`collapse${definition.id}`}>
+    <Wrapper role="rowgroup">
+      <SectionHeader href={`#collapse${definition.id}`} role="button" data-toggle="collapse" aria-expanded="true" aria-controls={`collapse${definition.id}`}>
+      { definition.title }
+      </SectionHeader>
+      <div className="collapse show" id={`collapse${definition.id}`}>
         { definition.properties.map((propertyDefinition) => renderProperty(propertyDefinition)) }
       </div>
-    </div>
+    </Wrapper>
   );
 
   function renderProperty(propertyDefinition) {
     if (!!inPlaceEditors[propertyDefinition.variableReference]) {
       return (
-        <PropertyEditor 
-          key={`${definition.prefix}.${propertyDefinition.variableReference}`}
-          definition={assembleProperty(propertyDefinition)} 
-          prefix={definition.prefix} 
-          resolvedReferences={resolvedReferences}
-          updateSectionDefinition={(updatedProperties) => handleUpdate(propertyDefinition, updatedProperties)}
-          onCancel={() => closeEditor(propertyDefinition.variableReference)}
-        />
+        <Box key={`${definition.prefix}.${propertyDefinition.variableReference}`}>
+          <PropertyEditor 
+            definition={assembleProperty(propertyDefinition)} 
+            prefix={definition.prefix} 
+            resolvedReferences={resolvedReferences}
+            updateSectionDefinition={(updatedProperties) => handleUpdate(propertyDefinition, updatedProperties)}
+            onCancel={() => closeEditor(propertyDefinition.variableReference)}
+          />
+        </Box>
       );
     } else {
       return (
@@ -64,6 +66,37 @@ function Section({definition, updateSectionDefinition, resolvedReferences}) {
     setInPlaceEditors({...inPlaceEditors, [variableReference]: false})
   }
 }
+
+const SectionHeader = styled.a`
+  color: #5d5d5d;
+  font-weight: 500;
+  font-size: 1.3rem;
+
+  &::before {
+    content: "►";
+    position: absolute;
+    left: 0;
+    margin-left: -1em;
+  }
+  
+  &:not(.collapsed)::before {
+    content: "▼";
+  }
+`;
+
+const Box = styled.div.attrs({
+  className: "open-inplace-editor",
+})`
+  background-color: #eaeaea;
+  padding: 0.5em;
+  border-radius: 5px;
+`;
+
+const Wrapper = styled.div.attrs({
+  className: "mt-4 mb-4 ml-3",
+})`
+  position: relative;
+`;
 
 Section.propTypes = {
   definition: PropTypes.shape({

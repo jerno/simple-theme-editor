@@ -29,15 +29,22 @@ export default function PropertyEditor({definition, prefix, updateSectionDefinit
                 defaultChecked={ propertyType === typeDef.value }
                 onChange={() => setPropertyType(typeDef.value)}
               />
-              <span className="mr-3">{ typeDef.label }</span>
+              <span className="ml-1 mr-3">{ typeDef.label }</span>
             </label>
           )) }
         </form>
-        <button onClick={() => requestUpdate()} class="btn btn-sm btn-primary" >OK</button>
-        <button onClick={() => onCancel()} class="btn btn-sm btn-light" >cancel</button>
+        <button onClick={() => requestUpdate()} className="btn btn-sm btn-primary" >OK</button>
+        <button onClick={() => onCancel()} className="btn btn-sm btn-light" >cancel</button>
       </div>
 
-      { error && <p>{ error }</p> }
+      { error && (
+        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+          { error }
+          <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      ) }
     </>
   );
 
