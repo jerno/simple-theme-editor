@@ -106,14 +106,21 @@ describe('Section', () => {
     
     expect(screen.getByDisplayValue('70')).toBeDefined();
     
-    expect(mockCallback.mock.calls.length).toBe(0);
+    const submissionsBeforeClick = filterSubmissions(mockCallback.mock.calls);
+    expect(submissionsBeforeClick.length).toBe(0);
     
     fireEvent.click(screen.getByText('OK'), {});
 
-    expect(mockCallback.mock.calls.length).toBe(1);
-    const firstCall = mockCallback.mock.calls[0];
+    const submissionsAfterClick = filterSubmissions(mockCallback.mock.calls);
+    expect(submissionsAfterClick.length).toBe(1);
+
+    const firstCall = submissionsAfterClick[0];
     const payload = firstCall[0];
     const affectedProperty = payload.updatedProperties;
     expect(affectedProperty.value).toBe('70');
   });
 });
+
+function filterSubmissions(calls) {
+  return calls.filter((params) => params[1] === false);
+}

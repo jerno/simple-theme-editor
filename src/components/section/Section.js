@@ -26,7 +26,7 @@ function Section({definition, updateSectionDefinition, resolvedReferences}) {
             definition={assembleProperty(propertyDefinition)} 
             prefix={definition.prefix} 
             resolvedReferences={resolvedReferences}
-            updateSectionDefinition={(updatedProperties) => handleUpdate(propertyDefinition, updatedProperties)}
+            updateSectionDefinition={(updatedProperties, dryRun) => handleUpdate(propertyDefinition, updatedProperties, dryRun)}
             onCancel={() => closeEditor(propertyDefinition.variableReference)}
           />
         </Box>
@@ -53,10 +53,10 @@ function Section({definition, updateSectionDefinition, resolvedReferences}) {
     }
   }
 
-  function handleUpdate(property, updatedProperties) {
+  function handleUpdate(property, updatedProperties, dryRun) {
     const variableReference = `${definition.prefix}.${property.variableReference}`;
-    const errorMessage = updateSectionDefinition({variableReference, updatedProperties});
-    if (!errorMessage) {
+    const errorMessage = updateSectionDefinition({variableReference, updatedProperties}, dryRun);
+    if (!dryRun && !errorMessage) {
       closeEditor(property.variableReference);
     }
     return errorMessage;

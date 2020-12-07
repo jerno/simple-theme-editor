@@ -5,17 +5,8 @@ import PropertyEditor from './PropertyEditor';
 
 
 describe('PropertyEditor', () => {
-  it('renders currnet value and variableReference', () => {
-    const PROPERTY_DEFINITION = {
-      displayName: 'Prop A',
-      value: 'valueA',
-      type: 'text',
-      variableReference: 'prop-a',
-    }
-    const PREFIX = 'prefix';
-
-    render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
-    const { value, variableReference } = PROPERTY_DEFINITION;
+  it('renders current value and variableReference', () => {
+    const { value, variableReference, PREFIX } = renderEditor();
 
     const expectedValue = value;
     const expectedVariableReference = `${PREFIX}.${variableReference}`;
@@ -41,15 +32,7 @@ describe('PropertyEditor', () => {
   });
 
   it('renders type editor radio group', () => {
-    const PROPERTY_DEFINITION = {
-      displayName: 'Prop A',
-      value: 'valueA',
-      type: 'px',
-      variableReference: 'prop-a',
-    }
-    const PREFIX = 'prefix';
-
-    render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
+    const { type } = renderEditor();
 
     expect(screen.queryAllByRole('radio')).toHaveLength(PropertyTypeDefinitions.length);
 
@@ -61,23 +44,15 @@ describe('PropertyEditor', () => {
     const uncheckedItems = radioOptions.filter((el) => !el.checked);
     expect(uncheckedItems.length).toEqual(PropertyTypeDefinitions.length - 1);
     
-    const selectedDisplayName = PropertyTypeDefinitions.find((def) => def.value === PROPERTY_DEFINITION.type).label;
-    const elementSelected = screen.getByDisplayValue(selectedDisplayName);
+    const selectedDisplayName = PropertyTypeDefinitions.find((def) => def.value === type).label;
+    const elementSelected = screen.getByLabelText(selectedDisplayName, { exact: false });
     expect(elementSelected).toBeDefined();
     
     expect(elementSelected.checked).toBeTruthy();
   });
 
   it('changes value when changing selected radio button', () => {
-    const PROPERTY_DEFINITION = {
-      displayName: 'Prop A',
-      value: 'valueA',
-      type: 'px',
-      variableReference: 'prop-a',
-    }
-    const PREFIX = 'prefix';
-
-    render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} />);
+    renderEditor();
     
     const pixelLabel = PropertyTypeDefinitions.find((def) => def.value === 'px').label;
     const plainTextLabel = PropertyTypeDefinitions.find((def) => def.value === 'text').label;
@@ -87,13 +62,13 @@ describe('PropertyEditor', () => {
     expect(pixelRadio).toBeDefined();
     expect(plainTextRadio).toBeDefined();
     
-    expect(pixelRadio.checked).toBeTruthy();
-    expect(plainTextRadio.checked).toBeFalsy();
-    
-    fireEvent.click(plainTextRadio, {});
-    
     expect(pixelRadio.checked).toBeFalsy();
     expect(plainTextRadio.checked).toBeTruthy();
+    
+    fireEvent.click(pixelRadio, {});
+    
+    expect(pixelRadio.checked).toBeTruthy();
+    expect(plainTextRadio.checked).toBeFalsy();
   });
 
   it('emits value only when user submits the editor', () => {
@@ -102,12 +77,15 @@ describe('PropertyEditor', () => {
     const valueField = screen.getByDisplayValue(value);
     userEvent.type(valueField, '_updated');
         
-    expect(mockCallback.mock.calls.length).toBe(0);
+    const submissionsBeforeClick = filterSubmissions(mockCallback.mock.calls);
+    expect(submissionsBeforeClick.length).toBe(0);
     
     fireEvent.click(screen.getByText('OK'), {});
 
-    expect(mockCallback.mock.calls.length).toBe(1);
-    expect(mockCallback.mock.calls[0][0].value).toBe('valueA_updated');
+    const submissionsAfterClick = filterSubmissions(mockCallback.mock.calls);
+
+    expect(submissionsAfterClick.length).toBe(1);
+    expect(submissionsAfterClick[0][0].value).toBe('valueA_updated');
   });
 
   it('emits nothing when user cancels the edition', () => {
@@ -116,11 +94,14 @@ describe('PropertyEditor', () => {
     const valueField = screen.getByDisplayValue(value);
     userEvent.type(valueField, '_updated');
         
-    expect(mockCallback.mock.calls.length).toBe(0);
+    const submissionsBeforeClick = filterSubmissions(mockCallback.mock.calls);
+    expect(submissionsBeforeClick.length).toBe(0);
     
     fireEvent.click(screen.getByText('cancel'), {});
 
-    expect(mockCallback.mock.calls.length).toBe(0);
+    const submissionsAfterClick = filterSubmissions(mockCallback.mock.calls);
+
+    expect(submissionsAfterClick.length).toBe(0);
     expect(mockCancel.mock.calls.length).toBe(1);
   });
 
@@ -131,16 +112,24 @@ describe('PropertyEditor', () => {
 
     const valueField = screen.getByDisplayValue(value);
     userEvent.type(valueField, '_updated');
-        
-    expect(mockCallback.mock.calls.length).toBe(0);
+    
+    const submissionsBeforeClick = filterSubmissions(mockCallback.mock.calls);
+    expect(submissionsBeforeClick.length).toBe(0);
     
     fireEvent.click(screen.getByText('OK'), {});
 
-    expect(mockCallback.mock.calls.length).toBe(1);
+    const submissionsAfterClick = filterSubmissions(mockCallback.mock.calls);
+
+    expect(submissionsAfterClick.length).toBe(0);
     expect(screen.getByText('Error message', { exact: false })).toBeDefined();
+    expect(screen.getByText('OK')).toBeDisabled();
   });
 
 });
+
+function filterSubmissions(calls) {
+  return calls.filter((params) => params[1] === false);
+}
 
 function renderEditor(options = {}) {
   const updateCallback = options.updateCallback || (() => { });
@@ -156,6 +145,6 @@ function renderEditor(options = {}) {
   const mockCancel = jest.fn(() => { });
 
   render(<PropertyEditor definition={PROPERTY_DEFINITION} prefix={PREFIX} updateSectionDefinition={mockCallback} onCancel={mockCancel} />);
-  const { value } = PROPERTY_DEFINITION;
-  return { value, mockCancel, mockCallback };
+  const { value, type, variableReference } = PROPERTY_DEFINITION;
+  return { value, type, variableReference, PREFIX, mockCancel, mockCallback };
 }

@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Property from './Property'
 import { PropertyTypeDefinitions } from '../../config/Definitions';
+import { useDebounce } from 'use-debounce/lib';
 
 export default function PropertyEditor({definition, prefix, updateSectionDefinition, onCancel, resolvedReferences}) {
   const [propertyValue, setPropertyValue] = useState(definition.value);
   const [propertyType, setPropertyType] = useState(definition.type);
+  const debouncedPropertyValue = useDebounce(propertyValue, 300);
   const [error, setError] = useState(false);
+
+  const requestUpdate = useCallback(({dryRun, value}) => {
+    const errorMessage = updateSectionDefinition({ value, type: propertyType }, dryRun);
+    setError(errorMessage);
+  }, [debouncedPropertyValue]);
+
+  useEffect(() => {
+    requestUpdate({dryRun: true, value: debouncedPropertyValue});
+  }, [debouncedPropertyValue]);
 
   return (
     <>
@@ -33,7 +44,7 @@ export default function PropertyEditor({definition, prefix, updateSectionDefinit
             </label>
           )) }
         </form>
-        <button onClick={() => requestUpdate()} className="btn btn-sm btn-primary" >OK</button>
+        <button onClick={() => requestUpdate({value: propertyValue, dryRun: false})} disabled={error} className="btn btn-sm btn-primary" >OK</button>
         <button onClick={() => onCancel()} className="btn btn-sm btn-light" >cancel</button>
       </div>
 
@@ -47,11 +58,6 @@ export default function PropertyEditor({definition, prefix, updateSectionDefinit
       ) }
     </>
   );
-
-  function requestUpdate() {
-    const errorMessage = updateSectionDefinition({ value: propertyValue, type: propertyType });
-    setError(errorMessage);
-  }
 }
 
 PropertyEditor.propTypes = {

@@ -19,7 +19,7 @@ export default class PropertyValueValidator {
     const references = this.findReferences(this.property.value);
     const resolvedRefs = this.resolveReferences(references);
   
-    const missingReferences = resolvedRefs.filter((variable) => variable.resolved === null);
+    const missingReferences = resolvedRefs.filter((variable) => variable.resolved === undefined);
     if (missingReferences.length > 0) {
       const missingReferenceNames = missingReferences.map((ref) => ref.variableRefrence);
       return `Undefined property: ${missingReferenceNames.join(', ')}`;
@@ -36,7 +36,7 @@ export default class PropertyValueValidator {
 
   resolveReferences(references) {
     return references.map((variableRefrence) => {
-      const resolved = this.definitions[variableRefrence] || null;
+      const resolved = this.definitions[variableRefrence]?.value;
       return {
         variableRefrence,
         resolved

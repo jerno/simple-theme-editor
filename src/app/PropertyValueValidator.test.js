@@ -35,7 +35,10 @@ describe('PropertyValueValidator', () => {
       variableReference: 'var2',
     };
     const definitions = {
-      "sizes.text": "1.2"
+      "sizes.text": {
+        value: "1.2",
+        type: "em",
+      }
     };
 
     const validationError = PropertyValueValidator.validatePropertyAgainstDefinitions(property, definitions);
@@ -50,7 +53,10 @@ describe('PropertyValueValidator', () => {
       variableReference: 'var2',
     };
     const definitions = {
-      "colors.primary": "#11ff22"
+      "colors.primary": {
+        value: "#11ff22",
+        type: "color",
+      }
     };
 
     const validationError = PropertyValueValidator.validatePropertyAgainstDefinitions(property, definitions);
@@ -79,7 +85,10 @@ describe('PropertyValueValidator', () => {
       variableReference: 'var',
     };
     const definitions = {
-      "colors.color1": "{colors.color2}"
+      "colors.color1": {
+        value: "{colors.color2}",
+        type: "color"
+      }
     };
 
     const validationError = PropertyValueValidator.validatePropertyAgainstDefinitions(property, definitions);
@@ -94,7 +103,10 @@ describe('PropertyValueValidator', () => {
       variableReference: 'var',
     };
     const definitions = {
-      "prefix.var": "1px solid {prefix.var}"
+      "prefix.var": {
+        value: "1px solid {prefix.var}",
+        type: "text"
+      }
     };
 
     const validationError = PropertyValueValidator.validatePropertyAgainstDefinitions(property, definitions);

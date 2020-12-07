@@ -26,9 +26,9 @@ function App() {
     </div>
   );
 
-  function requestUpdateSectionDefinition({variableReference, updatedProperties}) {
+  function requestUpdateSectionDefinition({variableReference, updatedProperties}, dryRun) {
     const errorMessage = validate(updatedProperties);
-    if (!errorMessage) {
+    if (!dryRun && !errorMessage) {
       setValues({
         ...values,
         [variableReference]: updatedProperties
