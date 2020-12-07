@@ -6,9 +6,11 @@ export const SectionDefinitions = [
     properties: [
       {
         displayName: 'Primary font color',
-        value: '#000000',
-        type: 'color',
         variableReference: 'primary',
+      },
+      {
+        displayName: 'Primary background color',
+        variableReference: 'primaryBackground',
       }
     ]
   },
@@ -19,8 +21,6 @@ export const SectionDefinitions = [
     properties: [
       {
         displayName: 'Default text size',
-        value: '1.1',
-        type: 'em',
         variableReference: 'text',
       }
     ]
@@ -32,8 +32,6 @@ export const SectionDefinitions = [
     properties: [
       {
         displayName: 'Border',
-        value: '1px solid {colors.primary}',
-        type: 'text',
         variableReference: 'border',
       }
     ]

@@ -43,10 +43,11 @@ jest.mock('../../config/Definitions', () => ({
 }));
 
 describe('Property', () => {
-  it('renders value and variableReference', () => {
+  it('renders raw value and variableReference', () => {
     const PROPERTY_DEFINITION = {
       displayName: 'Prop A',
       value: 'valueA',
+      type: 'text',
       variableReference: 'prop-a',
     }
     const PREFIX = 'prefix';
@@ -59,6 +60,28 @@ describe('Property', () => {
 
     expect(screen.getByText(expectedValue, { exact: false })).toBeDefined();
     expect(screen.getByText(expectedVariableReference, { exact: false })).toBeDefined();
+  });
+
+  it('renders \'resolved\' value', () => {
+    const PROPERTY_DEFINITION = {
+      displayName: 'Prop A',
+      value: 'valueA {test.ref}',
+      type: 'text',
+      variableReference: 'prop-a',
+    };
+    const DEFINITION_MAP = {
+      "test.ref": {
+        value: "resolved",
+        type: "text"
+      }
+    };
+    const PREFIX = 'prefix';
+
+    render(<Property definition={PROPERTY_DEFINITION} prefix={PREFIX} resolvedReferences={DEFINITION_MAP} />);
+
+    const expectedValue = 'valueA resolved';
+
+    expect(screen.getByText(expectedValue, { exact: false })).toBeDefined();
   });
 
   it('renders the bare displayName for a textual type', () => {

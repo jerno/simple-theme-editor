@@ -3,39 +3,41 @@ import PropTypes from 'prop-types'
 import Property from './Property'
 import { PropertyTypeDefinitions } from '../../config/Definitions';
 
-export default function PropertyEditor({definition, prefix, updateSectionDefinition, onCancel}) {
+export default function PropertyEditor({definition, prefix, updateSectionDefinition, onCancel, resolvedReferences}) {
   const [propertyValue, setPropertyValue] = useState(definition.value);
   const [propertyType, setPropertyType] = useState(definition.type);
   const [error, setError] = useState(false);
 
   return (
     <>
-      <Property definition={definition} prefix={prefix} />
+      <Property definition={definition} prefix={prefix} resolvedReferences={resolvedReferences} />
 
-      <label htmlFor="valueField">Value:</label>
-      <input id="valueField" type="text" name="valueField" value={propertyValue} onChange={(e) => {setPropertyValue(e.target.value)}}/>
+      <div className="d-flex flex-row pt-2 pb-2">
+        <label className="mr-3" htmlFor="valueField">Value:</label>
+        <input className="flex-grow-1" id="valueField" type="text" name="valueField" value={propertyValue} onChange={(e) => {setPropertyValue(e.target.value)}}/>
+      </div>
 
-      <div>
-        <form>
-        { PropertyTypeDefinitions.map((typeDef) => (
-          <label key={ typeDef.value }>
-            <input
-              type="radio"
-              name="typeField"
-              value={ typeDef.value }
-              defaultChecked={ propertyType === typeDef.value }
-              onChange={() => setPropertyType(typeDef.value)}
-            />
-            { typeDef.label }
-          </label>
-        )) }
+      <div className="d-flex flex-row align-items-center">
+        <form className="pt-2 pb-2 flex-grow-1">
+          <span className="mr-3">Type: </span>
+          { PropertyTypeDefinitions.map((typeDef) => (
+            <label key={ typeDef.value }>
+              <input
+                type="radio"
+                name="typeField"
+                value={ typeDef.value }
+                defaultChecked={ propertyType === typeDef.value }
+                onChange={() => setPropertyType(typeDef.value)}
+              />
+              <span className="mr-3">{ typeDef.label }</span>
+            </label>
+          )) }
         </form>
+        <button onClick={() => requestUpdate()} class="btn btn-sm btn-primary" >OK</button>
+        <button onClick={() => onCancel()} class="btn btn-sm btn-light" >cancel</button>
       </div>
 
       { error && <p>{ error }</p> }
-
-      <button onClick={() => onCancel()}>cancel</button>
-      <button onClick={() => requestUpdate()}>OK</button>
     </>
   );
 

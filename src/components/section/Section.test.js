@@ -14,14 +14,21 @@ const SECTION_DEFINITION = {
       variableReference: 'prop-a',
     }
   ]
-}
+};
+
+const DEFINITION_MAP = {
+  "test.prop-a": {
+    value: '7',
+    type: 'px',
+  }
+};
 
 describe('Section', () => {
   let mockCallback;
 
   beforeEach(() => {
     mockCallback = jest.fn(({type, value}) => {});
-    render(<Section definition={SECTION_DEFINITION} updateSectionDefinition={mockCallback} />);
+    render(<Section definition={SECTION_DEFINITION} updateSectionDefinition={mockCallback} resolvedReferences={DEFINITION_MAP} />);
   });
 
   it('renders without crashing', () => {});
@@ -106,7 +113,7 @@ describe('Section', () => {
     expect(mockCallback.mock.calls.length).toBe(1);
     const firstCall = mockCallback.mock.calls[0];
     const payload = firstCall[0];
-    const affectedProperty = payload.nextProperty;
+    const affectedProperty = payload.updatedProperties;
     expect(affectedProperty.value).toBe('70');
   });
 });

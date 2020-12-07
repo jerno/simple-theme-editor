@@ -2,50 +2,43 @@ import { useState } from "react";
 import Section from "../components/section/Section";
 import { SectionDefinitions } from "../config/Definitions";
 import PropertyValueValidator from "./PropertyValueValidator";
+import { getPreset, loadValues, saveValues } from "./storage/Storage";
 
 function App() {
-  const [sections, setSections] = useState(sortById(SectionDefinitions));
-  
+  const [sections,] = useState(sortById(SectionDefinitions));
+  const [values, setValues] = useState(loadValues());
+
   return (
-    <div>
-      <h1>Simple Theme Editor</h1>
+    <div className="p-3">
+      <h1 className="text-primary">Simple Theme Editor</h1>
       { sections.map((sectionDefinition) => (
         <Section 
           key={sectionDefinition.id} 
           definition={sectionDefinition}
+          resolvedReferences={values}
           updateSectionDefinition={requestUpdateSectionDefinition}
         />
       )) }
+      <button onClick={() => saveValues(values)()} type="button" class="btn btn-primary">Save</button>
+      <button onClick={() => setValues(getPreset())} type="button" class="btn btn-light">loadPreset</button>
+      <button type="button" class="btn btn-danger" disabled>Clear</button>
     </div>
   );
 
-  function requestUpdateSectionDefinition({nextSectionDefinition, nextProperty}) {
-    const errorMessage = validate(nextProperty);
+  function requestUpdateSectionDefinition({variableReference, updatedProperties}) {
+    const errorMessage = validate(updatedProperties);
     if (!errorMessage) {
-      updateSectionDefinition(nextSectionDefinition);
+      setValues({
+        ...values,
+        [variableReference]: updatedProperties
+      });
     }
     return errorMessage;
   }
 
-  function validate(nextProperty) {
-    const errorMessage = PropertyValueValidator.validatePropertyAgainstDefinitions(nextProperty, mapDefinitions());
+  function validate(updatedProperties) {
+    const errorMessage = PropertyValueValidator.validatePropertyAgainstDefinitions(updatedProperties, values);
     return errorMessage;
-  }
-
-  function mapDefinitions() {
-    const mappedEntries = SectionDefinitions.flatMap((section) => section.properties.map((property) => ([
-      `${section.prefix}.${property.variableReference}`,
-      property.value
-    ])))
-    return Object.fromEntries(mappedEntries);
-  }
-
-  function updateSectionDefinition(nextSection) {
-    const next = [
-      ...sections.filter((s) => s.id !== nextSection.id),
-      nextSection
-    ];
-    setSections(sortById(next));
   }
 
   function sortById(sections) {

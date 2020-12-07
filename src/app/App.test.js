@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { SectionDefinitions } from '../config/Definitions';
 import App from './App';
-import PropertyValueValidator from './PropertyValueValidator';
 
 jest.mock('../config/Definitions', () => ({ 
   SectionDefinitions: [
@@ -12,8 +11,6 @@ jest.mock('../config/Definitions', () => ({
       properties: [
         {
           displayName: 'Variable name',
-          value: 'customValue',
-          type: 'text',
           variableReference: 'var',
         }
       ]
@@ -25,8 +22,6 @@ jest.mock('../config/Definitions', () => ({
       properties: [
         {
           displayName: 'Variable name 2',
-          value: 'otherValue',
-          type: 'text',
           variableReference: 'var2',
         }
       ]
@@ -34,48 +29,44 @@ jest.mock('../config/Definitions', () => ({
   ],
   PropertyTypeDefinitions: [
     {
-      value: 'opt1',
-      label: 'opt1',
-    },
-    {
-      value: 'opt2',
-      label: 'opt2',
+      value: 'text',
+      label: 'text',
     },
   ]
 }));
 
-const MOCK_UPDATED_SECTION_DEFINITION = {
-  id: 1,
-  title: 'Custom section',
-  prefix: 'custom',
-  properties: [
+jest.mock('./storage/Storage', () => ({ 
+  loadValues: () => (
     {
-      displayName: 'Variable name',
-      value: 'nextValue',
-      type: 'text',
-      variableReference: 'var',
+      'custom.var': {
+        value: 'customValue',
+        type: 'text'
+      },
+      'custom2.var2': {
+        value: 'otherValue',
+        type: 'text'
+      }
     }
-  ]
-}
+  )
+}));
 
-jest.mock('../components/section/Section', () => ({definition, updateSectionDefinition}) => {
+jest.mock('../components/section/Section', () => ({definition, updateSectionDefinition, resolvedReferences}) => {
   return (
     <div 
       role="rowgroup" 
       data-testid={`userUpdateSimulator-${definition.id}`} 
       onClick={() => updateSectionDefinition({
-        nextSectionDefinition: MOCK_UPDATED_SECTION_DEFINITION,
-        nextProperty: MOCK_UPDATED_SECTION_DEFINITION.properties[0]
+        variableReference: 'custom.var',
+        updatedProperties: {
+          value: 'nextValue',
+          type: 'text',
+        }
       })}
     >
-      { JSON.stringify(definition) }
+      { definition.properties.map((prop) => resolvedReferences[`${definition.prefix}.${prop.variableReference}`].value).join(" ") }
     </div>
   );
 });
-
-jest.mock('./PropertyValueValidator', () => ({
-  validatePropertyAgainstDefinitions: jest.fn((property, definitions) => false)
-}));
 
 describe('App', () => {
   beforeEach(() => {
@@ -101,18 +92,5 @@ describe('App', () => {
 
     const updatedValueElement = screen.getByText(/nextValue/i);
     expect(updatedValueElement).toBeInTheDocument();
-  });
-
-  it('maps the properties of the definitions (for the validation)', () => {
-    const userUpdateSimulator = screen.getByTestId("userUpdateSimulator-1");
-    fireEvent.click(userUpdateSimulator, {});
-
-    expect(PropertyValueValidator.validatePropertyAgainstDefinitions.mock.calls.length).toBe(1);
-    const firstCallParameters = PropertyValueValidator.validatePropertyAgainstDefinitions.mock.calls[0];
-    const passedDefinitions = firstCallParameters[1];
-    expect(passedDefinitions).toStrictEqual({
-      "custom.var": "customValue",
-      "custom2.var2": "otherValue"
-    });
   });
 });
