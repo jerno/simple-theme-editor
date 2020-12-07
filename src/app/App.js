@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Section from "../components/section/Section";
 import { SectionDefinitions } from "../config/Definitions";
 import PropertyValueValidator from "./PropertyValueValidator";
-import { getPreset, loadValues, saveValues } from "./storage/Storage";
+import { EMPTY_STATE, getPreset, loadValues, saveValues } from "./storage/Storage";
 
 function App() {
   const [sections,] = useState(sortById(SectionDefinitions));
@@ -22,7 +22,7 @@ function App() {
       )) }
       <button onClick={() => saveValues(values)} type="button" className="btn btn-sm pl-4 pr-4 mr-1 btn-primary">Save</button>
       <button onClick={() => setValues(getPreset())} type="button" className="btn btn-sm pl-4 pr-4 mr-1 btn-light">Load preset</button>
-      <button onClick={() => setValues({})} type="button" className="btn btn-sm pl-4 pr-4 mr-1 btn-danger">Clear form</button>
+      <button onClick={() => setValues(EMPTY_STATE)} type="button" className="btn btn-sm pl-4 pr-4 mr-1 btn-danger">Clear form</button>
     </div>
   );
 

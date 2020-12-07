@@ -2,7 +2,7 @@ const KEY = "savedState";
 
 export function loadValues() {
   const savedState = localStorage.getItem(KEY);
-  const values = savedState ? JSON.parse(savedState) : {};
+  const values = savedState ? JSON.parse(savedState) : EMPTY_STATE;
   return values;
 }
 
@@ -82,3 +82,74 @@ export function getPreset() {
     },
   };
 }
+
+export const EMPTY_STATE = {
+  "colors.primary": {
+    value: "",
+    type: 'color',
+  },
+  "colors.primaryBackground": {
+    value: "",
+    type: 'color',
+  },
+  "colors.secondary": {
+    value: "",
+    type: 'color',
+  },
+  "colors.secondaryBackground": {
+    value: "",
+    type: 'color',
+  },
+  "colors.highlight1": {
+    value: "",
+    type: 'color',
+  },
+  "colors.highlight2": {
+    value: "",
+    type: 'color',
+  },
+  "sizes.text": {
+    value: "",
+    type: 'em',
+  },
+  "sizes.h1": {
+    value: "",
+    type: 'em',
+  },
+  "sizes.h2": {
+    value: "",
+    type: 'em',
+  },
+  "sizes.borderWidth": {
+    value: "",
+    type: 'px',
+  },
+  "textfield.textSize": {
+    value: "",
+    type: 'text',
+  },
+  "textfield.color": {
+    value: "",
+    type: 'color',
+  },
+  "textfield.border": {
+    value: "",
+    type: 'text',
+  },
+  "textfield.background": {
+    value: "",
+    type: 'color',
+  },
+  "buttons.fontSize": {
+    value: "",
+    type: 'em',
+  },
+  "buttons.color": {
+    value: "",
+    type: 'color',
+  },
+  "buttons.background": {
+    value: "",
+    type: 'color',
+  },
+};

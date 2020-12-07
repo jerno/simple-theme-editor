@@ -1,4 +1,4 @@
-import { getPreset, loadValues, saveValues } from "./Storage";
+import { EMPTY_STATE, getPreset, loadValues, saveValues } from "./Storage";
 
 describe('Storage', () => {
   it('getPreset', () => {
@@ -18,7 +18,7 @@ describe('Storage', () => {
     Storage.prototype.getItem = jest.fn(() => null)
     const storedValues = loadValues();
     
-    expect(Object.values(storedValues)).toHaveLength(0);
+    expect(storedValues).toStrictEqual(EMPTY_STATE);
   });
 
   it('saveValues', () => {
