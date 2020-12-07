@@ -11,7 +11,23 @@ export const SectionDefinitions = [
       {
         displayName: 'Primary background color',
         variableReference: 'primaryBackground',
-      }
+      },
+      {
+        displayName: 'Secondary font color',
+        variableReference: 'secondary',
+      },
+      {
+        displayName: 'Secondary background color',
+        variableReference: 'secondaryBackground',
+      },
+      {
+        displayName: 'Highlight on primary background',
+        variableReference: 'highlight1',
+      },
+      {
+        displayName: 'Highlight on secondary background',
+        variableReference: 'highlight2',
+      },
     ]
   },
   {
@@ -22,6 +38,18 @@ export const SectionDefinitions = [
       {
         displayName: 'Default text size',
         variableReference: 'text',
+      },
+      {
+        displayName: 'Header1 text size',
+        variableReference: 'h1',
+      },
+      {
+        displayName: 'Header2 text size',
+        variableReference: 'h2',
+      },
+      {
+        displayName: 'Default border width ',
+        variableReference: 'borderWidth',
       }
     ]
   },
@@ -31,8 +59,39 @@ export const SectionDefinitions = [
     prefix: 'textfield',
     properties: [
       {
+        displayName: 'Text size',
+        variableReference: 'textSize',
+      },
+      {
+        displayName: 'Font color',
+        variableReference: 'color',
+      },
+      {
         displayName: 'Border',
         variableReference: 'border',
+      },
+      {
+        displayName: 'Background',
+        variableReference: 'background',
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: 'Buttons',
+    prefix: 'buttons',
+    properties: [
+      {
+        displayName: 'Font size',
+        variableReference: 'fontSize',
+      },
+      {
+        displayName: 'Font color',
+        variableReference: 'color',
+      },
+      {
+        displayName: 'Background',
+        variableReference: 'background',
       }
     ]
   },
